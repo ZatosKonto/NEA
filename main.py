@@ -1,5 +1,4 @@
 import pygame
-from sys import exit
 
 class Button:
     def __init__(self, x, y, image):
@@ -43,7 +42,7 @@ class Menu:
         settings.draw()
         
         if play.collide() == True and event.type == pygame.MOUSEBUTTONDOWN:
-            game.self_operating = True
+            game.game_initial_true = True
 
         elif leaderboard.collide() == True and event.type == pygame.MOUSEBUTTONDOWN:
             print("leaderboard button pressed")
@@ -52,28 +51,49 @@ class Menu:
             print("settings button pressed")
 
 class Game:
-    self_game_initialise_on_off = False
-    self_gameplay_on_off = False
-
+    game_initial_true = False
+    game_gameplay_true = False
     def __init__(self):
         pass
+
     
     def gameplay(self):
-        while True:
-            game_surface = pygame.image.load('graphics/game.png').convert_alpha()
-            screen.blit(game_surface,(0,0))
+                game_surface = pygame.image.load('graphics/game.png').convert_alpha()
+                screen.blit(game_surface,(0,0))
+                backarrow = Button(50,120,'buttons/back_arrow.png')
+                clean = Button(210,450 , 'buttons/clean_button.png')
+                feed = Button(60,40,'buttons/feed_button.png')
+                heal = Button(410,450,'buttons/heal_button.png')
+                sleep = Button(410,40,'buttons/sleep_button.png')
+                play = Button(220,40,'buttons/playbutton_button.png')
+                pet = Button(60,450, 'buttons/pet_button.png')
+
+                backarrow.draw()
+                clean.draw()
+                feed.draw()
+                heal.draw()
+                sleep.draw()
+                play.draw()
+                pet.draw()
+
+                if backarrow.collide() == True and event.type == pygame.MOUSEBUTTONDOWN:
+                    game.game_initial_true = False
+                    game.game_gameplay_true = False         
 
 
-    def game_state(self):
+
+
+    def initial_game_state(self):
         game_surface = pygame.image.load('graphics/menu.png').convert_alpha()
         screen.blit(game_surface,(0,0))
 
         play = Button(262,450,'buttons/play_button.png')
-        
         play.draw()
+        
         if play.collide() == True and event.type == pygame.MOUSEBUTTONDOWN:
-              self.gameplay()
-
+            game.game_initial_true = False
+            game.game_gameplay_true = True
+            self.gameplay()
 
 #Initialises pygame - sets an ingame clock (frame rate), initialises the screen + sets caption for game
 pygame.init()
@@ -85,14 +105,18 @@ pygame.display.set_caption("Virtual Pet")
 menu = Menu()
 game = Game()
 
-while True:
+running = True
+
+while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            exit()            
-    
-    if game.self_operating == True:
-        game.game_state()
+            running = False            
+
+    if game.game_initial_true == True:
+        game.initial_game_state()
+    elif game.game_gameplay_true == True:
+        game.gameplay()
     else:
         menu.display()
 
